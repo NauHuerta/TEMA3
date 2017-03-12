@@ -26,7 +26,7 @@ function onDeviceReady(){
 			alert("Funciona guardar");								
 			$.ajax({
 				type:"POST",
-				url:"http://marce88gt.esy.es/Guardar.php",
+				url:"http://martinaos.esy.es/Guardar.php",
 				data:"Nom="+nom+"&Dir="+dir+"&Rfc="+rfc+"&Tel="+tel+"&Clasif="+clasif+"&Foto="+foto+"&Lat="+lat+"&Long="+longit,
 				success:function (datos) {
 					alert("Datos guardados correctamente: "+datos);
@@ -38,18 +38,59 @@ function onDeviceReady(){
 		$("#btnConsServ").tap(function (){
 			$.ajax({
 				type:"POST",
-				url:"http://marce88gt.esy.es/Consulta.php",
+				url:"http://martinaos.esy.es/Consulta.php",
 				data:"",
 				success:function (datos) {
 					var reg=$.parseJSON(datos);
 					var fila=$("#datosTodos");
+					fila.html("");
 					 for(var i in reg){
-					 	fila.append("<tr><td>"+reg[i].id_servicio+"</td><td>"+reg[i].Nombre_servicio+"</td><td>"+reg[i].Direccion+"</td><td>"+reg[i].RFC+"</td><td>"+reg[i].Telefono+"</td><td>"+reg[i].Clasificacion+"</td><td>"+reg[i].Foto+"</td><td>"+reg[i].Latitud+"</td><td>"+reg[i].Longitud+"</td></tr>");
+					 	fila.append("<tr><td>"+reg[i].id_servicios+"</td><td>"+reg[i].Nombre_servicios+"</td><td>"+reg[i].Direccion+"</td><td>"+reg[i].RFC+"</td><td>"+reg[i].Telefono+"</td><td>"+reg[i].Clasificacion+"</td><td>"+reg[i].Foto+"</td><td>"+reg[i].Latitud+"</td><td>"+reg[i].Longitud+"</td></tr>");
 					 }
 					$("#tb1").table("refresh");
 				}
 			});
 		});
+
+
+		/**********Evento para consultar servicio por ID*************/
+		$("#btnCons2").tap(function (){
+			var idConsulta=$("#idConsulta").val();
+			$.ajax({
+				type:"POST",
+				url:"http://martinaos.esy.es/consultauno.php",
+				data:"id="+idConsulta,
+				success:function (datos) {
+					var reg=$.parseJSON(datos);
+					var fila=$("#DT");
+					fila.html("");
+					 for(var i in reg){
+					 	fila.append("<tr><td>"+reg[i].id_servicios+"</td><td>"+reg[i].Nombre_servicios+"</td><td>"+reg[i].Direccion+"</td><td>"+reg[i].RFC+"</td><td>"+reg[i].Telefono+"</td><td>"+reg[i].Clasificacion+"</td><td>"+reg[i].Foto+"</td><td>"+reg[i].Latitud+"</td><td>"+reg[i].Longitud+"</td></tr>");
+					 }
+					$("#tb2").table("refresh");
+				}
+			});
+		});
+
+
+
+
+		/**********Evento para Eliminar Servicios*************/
+		$("#btneliminar").tap(function (){
+			var id=$("#ideliminar").val();
+			//alert("Funciona"+id);
+			$.ajax({
+				type:"POST",
+				url:"http://martinaos.esy.es/Eliminar.php",
+				data:"id="+id,
+				success:function(datos){
+					alert(datos);
+				
+				}
+			});
+		});
+
+
 	/***********Obtener Coordenadas***********************/
 	$("#btnCords").tap(function(){//Obtener coordenadas para el registro de servicios			
   		obtenerUbicacion();
@@ -106,8 +147,10 @@ function onDeviceReady(){
 			<ul data-role="listview">
 				<li><a href="#Registrar">Registrar servicios</a></li>	
 				<li><a href="#Consultar">Consultar servicios</a></li>
+				<li><a href="#Consultar1">Consultar servicios por ID</a></li>
 				<li><a href="#Actualizar">Actualizar servicios</a></li>
-				<li><a href="#Eliminar">Eliminar servicios</a></li>
+				<li><a href="#Eliminar1">Eliminar servicios</a></li>
+				<li><a href="#DEstudiante">Datos del estudiante</a></li>
 			</ul>	
 		</div>
 		<div data-role="footer">
@@ -164,6 +207,81 @@ function onDeviceReady(){
 				</tbody>
 			</table>
 			</div>
+		</div>
+		<div data-role="footer">
+			<p><a href="#Principal" class="ui-btn ui-icon-home ui-btn-icon-left">Regresar</a></p>
+		</div>
+	</div>
+
+<div data-role="page" id="Consultar1">
+    <div data-role="header">
+      <p>Consultar Servicios por ID</p>
+    </div>
+    <div data-role="content" id="cuatro">
+      <label for="idConsulta">ID:</label>
+      <input type="text" id="idConsulta" >
+      <input type="button" id="btnCons2" value="Consultar Servicio">
+
+      <div>
+			<table data-role="table" data-mode="columntoggle" class="ui-responsive" id="tb2">
+				<thead id="DT">
+					<tr>
+						<th data-priority="1">Id</th>
+						<th data-priority="2">Nombre</th>
+						<th data-priority="3">Direción</th>
+						<th data-priority="4">RFC</th>
+						<th data-priority="5">Tel:</th>
+						<th data-priority="6">Clasif</th>
+						<th data-priority="7">Foto</th>
+						<th data-priority="8">Lat</th>
+						<th data-priority="9">Long</th>
+					</tr>
+				</thead>				
+				<tbody id="DT">
+				</tbody>
+			</table>
+			</div>
+
+
+
+      <div id="idResCont2"></div>
+    </div>
+    <div data-role="footer">
+    <p><a href="#Principal" class="ui-btn ui-icon-home ui-btn-icon-left">Regresar</a></p>
+      
+    </div>
+</div>
+
+
+<div data-role="page" id="Eliminar1">
+    <div data-role="header">
+      <p>Eliminar Servicios</p>
+    </div>
+    <div data-role="content" >
+      <label for="idel">Sevicio a eliminar:</label>
+      <input type="text" id="ideliminar" >
+      <input type="button" id="btneliminar" value="Eliminar Servicios">
+      </div>
+         <div data-role="footer">
+    <p><a href="#Principal" class="ui-btn ui-icon-home ui-btn-icon-left">Regresar</a></p>
+      
+    </div>
+</div>
+
+
+
+
+<div data-role="page" id="DEstudiante">
+		<div data-role="header">
+			<p>Datos del estudiante</p>
+		</div>	
+		<div data-role="content">
+		<p>BASES DE DATOS PARA DISPOSITIVOS MÓVILES</p>
+		<p>NAU HUERTA PÉREZ</p>
+		<p>NO CONTROL: 13940063*</p>
+		<p>TEL: 2761111221</p>
+		
+			
 		</div>
 		<div data-role="footer">
 			<p><a href="#Principal" class="ui-btn ui-icon-home ui-btn-icon-left">Regresar</a></p>
